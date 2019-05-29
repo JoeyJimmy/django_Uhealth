@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block head_block %}
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+{% endblock %}
+
+{% block body_block %}
+    {% if user.is_authenticated %}
+        <form action="{% url "myapp:upload" %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file"
+                   title="Upload excel file"
+                   name="excel_file"
+                   style="border: 1px solid black; padding: 5px;"
+                   required="required">
+            <p>
+            <input type="submit"
+                   value="Upload"
+                   style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;">
+        </form>
+
+        <script type="text/javascript">
+            var context = {{context|safe}}
+            var error = {{error|safe}}
+        </script>
+
+        
+
+        <script src="{% static 'js/image.js' %}"></script>
+        <script type="text/javascript">
+            //製作圖表
+            document.write("<div id=page-wrapper style=margin-left:0> <div class=row>")
+            for(num=0 ; num<context.length;num++){
+                x = "<div class=col-lg-3>"+
+                    "<div class=panel panel-yellow>"+
+                    "<div class=panel-body>"+
+                    "<div id="+context[num]['title']+" style=height:370px; width:100%;></div>"+
+                    "</div>"+
+                    "</div>"+
+                    "</div>"
+                document.write(x);
+            }
+            document.write("</div> </div>")
+            
+        </script>
+      
+        <script type="text/javascript">
+            //顯示格式錯誤的欄位
+            document.write("<p>"+ error['box_error'] +"</p>");
+        </script>
+
+    {% else %}
+        <script> document.location.href="{% url 'myapp:user_login' %}";</script>
+    {% endif %}
+        
+{% endblock %}
+
+
